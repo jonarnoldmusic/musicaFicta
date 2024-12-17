@@ -1,9 +1,20 @@
+import QtQuick 2.0
 import MuseScore 3.0
 MuseScore {
     menuPath: "Plugins.MusicaFicta"
     description: "Place editorial accidentals (musica ficta) above the staff."
-    version: "1.6"
+    version: "1.7"
     
+	//4.4 title: "MusicaFicta"
+    //4.4 categoryCode: "composing-arranging-tools"
+    Component.onCompleted : {
+        if (mscoreMajorVersion >= 4 && mscoreMinorVersion <= 3) {
+           title = qsTr("MusicaFicta") ;
+           // thumbnailName = ".png";
+           categoryCode = "composing-arranging-tools";
+        }
+    }
+	
     function makeFicta(accidental) {
       var targetLine = -4; // -4 is two ledger lines above staff
       var origLine = accidental.parent.line;
@@ -34,6 +45,9 @@ MuseScore {
     } //end makeFicta function
     
     onRun: {
+	
+		curScore.startCmd();
+	
         var elementsList = curScore.selection.elements;
         //Make sure something is selected.
         if (elementsList.length==0) {
@@ -57,6 +71,10 @@ MuseScore {
                   }
             } //end element list loop
         } //end selection check
-        Qt.quit();
+        
+		curScore.endCmd();
+         
+        (typeof(quit) === 'undefined' ? Qt.quit : quit)()
+		
     } //end onRun
 }
